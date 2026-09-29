@@ -5,6 +5,12 @@ All notable changes to the AXe iOS testing framework will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Fixed `tap`, `touch`, `swipe`, and matching batch steps silently dispatching mirrored input on an upside-down simulator when the selected Xcode does not expose the SimulatorKit orientation probe (e.g. Xcode 26.3). AXe now prints a warning when it has to assume portrait.
+
 ## [v1.8.0] - 2026-07-20
 
 ### Added

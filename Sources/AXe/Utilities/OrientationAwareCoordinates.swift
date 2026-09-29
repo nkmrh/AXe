@@ -184,6 +184,11 @@ struct OrientationAwareCoordinates {
             logger.info().log(
                 "AX frame \(Int(appFrame.width))×\(Int(appFrame.height)) is portrait; passthrough"
             )
+            // A portrait-shaped AX frame cannot distinguish portrait from upside-down
+            // portrait, so warn instead of silently dispatching possibly mirrored input.
+            if simulatorOrientation == nil {
+                warnOrientationUnavailableOnce()
+            }
             return .passthrough
         }
 
@@ -503,6 +508,21 @@ struct OrientationAwareCoordinates {
     }
 
     // MARK: - Private Helpers
+
+    private static var hasWarnedOrientationUnavailable = false
+
+    /// Emits the orientation-unavailable warning at most once per process so batch
+    /// runs do not repeat it for every step.
+    private static func warnOrientationUnavailableOnce() {
+        guard !hasWarnedOrientationUnavailable else { return }
+        hasWarnedOrientationUnavailable = true
+        print(
+            "Warning: Unable to read the simulator UI orientation from SimulatorKit with the selected Xcode; assuming portrait. "
+                + "If the simulator is rotated upside down, input will land at mirrored coordinates. "
+                + "Select a newer Xcode (for example via DEVELOPER_DIR) or rotate the simulator to portrait.",
+            to: &standardError
+        )
+    }
 
     /// Applies a `CoordinateMapping` to a single logical point, logging the translation.
     private static func applyMapping(
