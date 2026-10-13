@@ -4,6 +4,7 @@ import Foundation
 enum BatchStepKind: String {
     case tap
     case swipe
+    case pinch
     case gesture
     case touch
     case type
@@ -43,6 +44,8 @@ struct BatchStepParser {
             return try await parseCommand(Tap.self, arguments: arguments, context: context, logger: logger)
         case .swipe:
             return try await parseCommand(Swipe.self, arguments: arguments, context: context, logger: logger)
+        case .pinch:
+            return try await parseCommand(Pinch.self, arguments: arguments, context: context, logger: logger)
         case .gesture:
             return try await parseCommand(Gesture.self, arguments: arguments, context: context, logger: logger)
         case .touch:

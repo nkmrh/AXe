@@ -5,6 +5,7 @@ Use this reference when generating or reviewing `axe batch` commands.
 ## Supported step commands
 - `tap`
 - `swipe`
+- `pinch`
 - `gesture`
 - `touch`
 - `type`

@@ -9,7 +9,7 @@ struct Batch: AsyncParsableCommand {
         Steps are executed in order.
 
         Supported step commands:
-          tap, swipe, gesture, touch, type, button, key, key-sequence, key-combo
+          tap, swipe, pinch, gesture, touch, type, button, key, key-sequence, key-combo
 
         Batch-only pseudo-step:
           sleep <seconds>

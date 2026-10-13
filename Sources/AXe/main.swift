@@ -22,6 +22,7 @@ struct Axe: AsyncParsableCommand {
             Type.self,
             Swipe.self,
             Drag.self,
+            Pinch.self,
             Button.self,
             Key.self,
             KeySequence.self,

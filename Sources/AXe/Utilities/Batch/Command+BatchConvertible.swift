@@ -157,6 +157,13 @@ extension Swipe: BatchConvertible {
     }
 }
 
+extension Pinch: BatchConvertible {
+    func toBatchPrimitives(context: BatchContext, logger: AxeLogger) async throws -> [BatchPrimitive] {
+        let pinchEvent = try await makePinchEvent(for: context.simulatorUDID, logger: logger)
+        return [.hidMergeable(buildDelayedEvent(preDelay: preDelay, mainEvent: pinchEvent, postDelay: postDelay))]
+    }
+}
+
 extension Gesture: BatchConvertible {
     func toBatchPrimitives(context: BatchContext, logger: AxeLogger) async throws -> [BatchPrimitive] {
         let width = screenWidth ?? 390.0

@@ -60,6 +60,16 @@ axe drag --start-x 100 --start-y 400 --end-x 300 --end-y 400 --duration 0.4 --st
 
 `drag` emits one composite low-level HID event: touch down at the start point, a sequence of explicit touch move events, then touch up at the end point.
 
+## Pinch
+
+```bash
+axe pinch -x 200 -y 400 --scale 2.0 --udid <UDID>                          # Zoom in
+axe pinch -x 200 -y 400 --scale 0.5 --radius 100 --udid <UDID>             # Zoom out
+axe pinch -x 200 -y 400 --scale 1.5 --duration 0.8 --steps 40 --udid <UDID>
+```
+
+`pinch` emits one composite two-finger HID event. Both fingers touch down on a horizontal line through the center, `--radius` points away from it (default 50), then move until each is `--radius * --scale` points away. A scale greater than 1 zooms in; less than 1 zooms out.
+
 ## Touch (low-level)
 
 ```bash
@@ -234,10 +244,10 @@ axe stream-video --udid <UDID> --fps 30 --format ffmpeg | \
 
 | Parameter | Range | Description | Available on |
 |---|---|---|---|
-| `--pre-delay` | 0–10s | Delay before action | tap, swipe, drag, gesture |
-| `--post-delay` | 0–10s | Delay after action | tap, swipe, drag, gesture |
-| `--duration` | 0–10s | Action duration | swipe, drag, gesture, button, key |
-| `--steps` | 1–1000 | Touch move event count | drag |
+| `--pre-delay` | 0–10s | Delay before action | tap, swipe, drag, pinch, gesture |
+| `--post-delay` | 0–10s | Delay after action | tap, swipe, drag, pinch, gesture |
+| `--duration` | 0–10s | Action duration | swipe, drag, pinch, gesture, button, key |
+| `--steps` | 1–1000 | Touch move event count | drag, pinch |
 | `--value` | 0–100 | Target slider percentage | slider |
 | `--delay` | 0–5s | Between-item delay | key-sequence, touch |
 

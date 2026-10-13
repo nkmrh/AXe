@@ -185,6 +185,74 @@ struct HIDInteractor {
         try await performHIDEvent(event, for: simulatorUDID, logger: logger)
     }
 
+    struct PinchFingerPositions {
+        let finger1: (x: Double, y: Double)
+        let finger2: (x: Double, y: Double)
+    }
+
+    /// Finger positions for a two-finger pinch on a horizontal line through `center`.
+    /// The first element is the touch-down position; the remaining `steps` elements are the touch-move positions.
+    static func pinchFingerPositions(
+        center: (x: Double, y: Double),
+        startRadius: Double,
+        endRadius: Double,
+        steps: Int
+    ) throws -> [PinchFingerPositions] {
+        guard steps > 0 else {
+            throw CLIError(errorDescription: "Pinch steps must be greater than 0.")
+        }
+
+        return (0...steps).map { step in
+            let progress = Double(step) / Double(steps)
+            let radius = startRadius + ((endRadius - startRadius) * progress)
+            return PinchFingerPositions(
+                finger1: (x: center.x - radius, y: center.y),
+                finger2: (x: center.x + radius, y: center.y)
+            )
+        }
+    }
+
+    static func makeCompositePinchEvent(
+        positions: [PinchFingerPositions],
+        duration: TimeInterval,
+        initialHold: TimeInterval,
+        finalHold: TimeInterval
+    ) throws -> FBSimulatorHIDEvent {
+        guard let start = positions.first, let end = positions.last, positions.count > 1 else {
+            throw CLIError(errorDescription: "Pinch requires a start position and at least one move position.")
+        }
+        guard duration >= 0 else {
+            throw CLIError(errorDescription: "Pinch duration must be non-negative.")
+        }
+        guard initialHold >= 0, finalHold >= 0 else {
+            throw CLIError(errorDescription: "Pinch hold durations must be non-negative.")
+        }
+
+        func twoFingerTouch(_ direction: FBSimulatorHIDDirection, _ position: PinchFingerPositions) -> FBSimulatorHIDEvent {
+            .twoFingerTouch(
+                direction: direction,
+                finger1: CGPoint(x: position.finger1.x, y: position.finger1.y),
+                finger2: CGPoint(x: position.finger2.x, y: position.finger2.y)
+            )
+        }
+
+        let stepDelay = duration / Double(positions.count - 1)
+        var events: [FBSimulatorHIDEvent] = [
+            twoFingerTouch(.down, start),
+            .delay(initialHold)
+        ]
+
+        for position in positions.dropFirst() {
+            events.append(.delay(stepDelay))
+            events.append(twoFingerTouch(.down, position))
+        }
+
+        events.append(.delay(finalHold))
+        events.append(twoFingerTouch(.up, end))
+
+        return .composite(events)
+    }
+
     static func performPhysicalTap(
         at point: (x: Double, y: Double),
         preDelay: Double?,
