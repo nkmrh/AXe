@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added `axe pinch -x/-y --scale` for two-finger pinch gestures around a point, with orientation-aware coordinates, using the existing IDB two-finger touch event. Also available as a batch step.
+- Added `axe pinch -x/-y --scale` for two-finger pinch gestures around a point, with orientation-aware coordinates, using the existing IDB two-finger touch event. Also available as a batch step ([#75](https://github.com/cameroncooke/AXe/pull/75) by [@nkmrh](https://github.com/nkmrh)).
 
 ## [v1.8.0] - 2026-07-20
 
