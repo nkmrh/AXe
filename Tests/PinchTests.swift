@@ -27,6 +27,23 @@ struct PinchCommandSurfaceTests {
         #expect(result.output.contains("Scale must be greater than 0 and not equal to 1."))
     }
 
+    @Test("Non-finite center or duration fails validation", arguments: [
+        "-x inf -y 400 --scale 2",
+        "-x 200 -y inf --scale 2",
+        "-x 200 -y 400 --scale 2 --duration inf"
+    ])
+    func nonFiniteValuesFailValidation(arguments: String) async throws {
+        let result = try await TestHelpers.runAxeCommandAllowFailure(
+            "pinch \(arguments) --udid invalid"
+        )
+
+        #expect(result.exitCode != 0)
+        #expect(
+            result.output.contains("Coordinates must be non-negative values.")
+                || result.output.contains("Duration must be greater than 0.")
+        )
+    }
+
     @Test("Fingers moving to negative X fail validation")
     func fingersMovingToNegativeXFailValidation() async throws {
         let result = try await TestHelpers.runAxeCommandAllowFailure(

@@ -52,19 +52,19 @@ struct Pinch: AsyncParsableCommand {
     var simulatorUDID: String
 
     func validate() throws {
-        guard centerX >= 0, centerY >= 0 else {
+        guard centerX.isFinite, centerY.isFinite, centerX >= 0, centerY >= 0 else {
             throw ValidationError("Coordinates must be non-negative values.")
         }
-        guard scale > 0, scale != 1 else {
+        guard scale.isFinite, scale > 0, scale != 1 else {
             throw ValidationError("Scale must be greater than 0 and not equal to 1.")
         }
-        guard radius > 0 else {
+        guard radius.isFinite, radius > 0 else {
             throw ValidationError("Radius must be greater than 0.")
         }
         guard centerX - max(radius, radius * scale) >= 0 else {
             throw ValidationError("Pinch fingers would move to negative X coordinates. Reduce --radius or --scale, or move the center right.")
         }
-        guard duration > 0 else {
+        guard duration.isFinite, duration > 0 else {
             throw ValidationError("Duration must be greater than 0.")
         }
         guard (1...Self.maxSteps).contains(steps) else {
